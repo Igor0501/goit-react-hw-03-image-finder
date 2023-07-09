@@ -13,6 +13,12 @@ export const ImageGallery = ({ items, getItemClick }) => {
 };
 
 ImageGallery.propTypes = {
-  items: PropTypes.array.isRequired,
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    })
+  ).isRequired,
   getItemClick: PropTypes.func.isRequired,
 };
+
+export default ImageGallery;

@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import { Button, Form, Header, Input, Label } from './Searchbar.styled';
 import { BsSearch } from 'react-icons/bs';
+import PropTypes from 'prop-types';
 
 export class SearchBar extends Component {
   state = {
@@ -8,11 +9,16 @@ export class SearchBar extends Component {
   };
 
   // Записуємо в стейт значення інпута
-  handleChangeSearchQuery = e => {
-    const searchQuery = e.currentTarget.value.toLowerCase();
+handleChangeSearchQuery = e => {
+  const newSearchQuery = e.currentTarget.value.toLowerCase();
+  const { searchQuery } = this.state;
 
-    this.setState({ searchQuery });
-  };
+  if (newSearchQuery === searchQuery) {
+    return;
+  }
+
+  this.setState({ searchQuery: newSearchQuery });
+};
 
   // Передаємо в App значення searchQuery і очищуємо форму
   handleSubmit = e => {
@@ -26,7 +32,7 @@ export class SearchBar extends Component {
     }
 
     onSubmit(searchQuery);
-    this.setState({ searchQuery: '' });
+    this.setState({ searchQuery: searchQuery }); //зберігає вміст пошуку
   };
 
   render() {
@@ -54,3 +60,7 @@ export class SearchBar extends Component {
     );
   }
 }
+
+SearchBar.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};

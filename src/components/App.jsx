@@ -5,9 +5,9 @@ import { ImageGallery } from './Gallery/ImageGallery/ImageGallery';
 import fetchImages from './Gallery/API/api';
 import { LoadMore } from './Gallery/Button/Button';
 import { Container } from 'components/App.styled';
-import { ModalOvelay } from './Gallery/Modal/Modal';
+import { ModalOverlay } from './Gallery/Modal/Modal';
 import { Loader } from './Gallery/Loader/Loader';
-import scrollOnLoad from './Gallery/utils/scrollLoadBtn';
+import scrollOnLoad from '../utils/scrollLoadBtn';
 
 export class App extends Component {
   state = {
@@ -28,33 +28,35 @@ export class App extends Component {
   }
 
   // При сабміті форми приймає значення інпуту і скидає images та page
-  handleSubmitSearchQuery = searchQuery => {
+ handleSubmitSearchQuery = searchQuery => {
+  if (searchQuery !== this.state.searchQuery) {
     this.setState({ images: [], searchQuery, page: 1 });
-  };
+  }
+};
 
-  // Витягуємо дані з фетча і записуємо в стейт
-  getDataImages = async () => {
-    const { searchQuery, page } = this.state;
+// Витягуємо дані з фетча і записуємо в стейт
+getDataImages = async () => {
+  const { searchQuery, page } = this.state;
 
-    this.setState({ isLoading: true });
+  this.setState({ isLoading: true });
 
-    try {
-      const { hits } = await fetchImages(searchQuery, page);
+  try {
+    const { hits } = await fetchImages(searchQuery, page);
 
-      this.setState(({ images, page }) => ({
-        images: [...images, ...hits],
-        page: page + 1,
-      }));
+    this.setState(prevState => ({
+      images: [...prevState.images, ...hits],
+      page: prevState.page + 1, // Збільште номер сторінки на 1 для отримання наступних зображень
+    }));
 
-      if (page !== 1) {
-        scrollOnLoad();
-      }
-    } catch (error) {
-      this.setState({ error: 'Oops something went wrong...' });
-    } finally {
-      this.setState({ isLoading: false });
+    if (page !== 1) {
+      scrollOnLoad();
     }
-  };
+  } catch (error) {
+    this.setState({ error: 'Oops something went wrong...' });
+  } finally {
+    this.setState({ isLoading: false });
+  }
+};
 
   // Отримуємо Оригінальне зображення по кліку і відкриваємо модалку
   getLargeImage = largeImage => {
@@ -76,9 +78,9 @@ export class App extends Component {
         {error}
         <ImageGallery items={images} getItemClick={this.getLargeImage} />
         {isLoading && <Loader />}
-        {lengthImages && <LoadMore onLoadMore={() => this.getDataImages} />}
+        {lengthImages && <LoadMore onLoadMore={() => this.getDataImages()} />}
         {isModalOpen && (
-          <ModalOvelay
+          <ModalOverlay
             largeImageURL={largeImage}
             onClick={this.toggleShowModal}
           />

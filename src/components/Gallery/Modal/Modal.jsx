@@ -1,7 +1,8 @@
 import { Component } from 'react';
 import { Overlay, Modal } from './Modal.styled';
+import PropTypes from 'prop-types';
 
-export class ModalOvelay extends Component {
+export class ModalOverlay extends Component {
   // Вішаємо слухач на window по натисканню клавіші при монтуванні
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown);
@@ -36,3 +37,8 @@ export class ModalOvelay extends Component {
     );
   }
 }
+
+ModalOverlay.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  largeImageURL: PropTypes.string.isRequired,
+};
